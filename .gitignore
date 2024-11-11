@@ -1,0 +1,12 @@
+# Ignore Mac files
+**/.DS_Store
+
+# Ignore keys and certificates
+**/*.pem
+
+# Ignore env files except the sample
+**/*.env*
+!sample.env
+
+# Ignore node_modules
+**/node_modules

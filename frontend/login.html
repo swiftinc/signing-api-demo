@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank App Demo</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="icon" type="image/ico" href="images/favicon.ico">
+    <link href="style.css" rel="stylesheet" type="/css/login.css">  
+    <script
+        src="https://code.jquery.com/jquery-3.7.1.min.js"
+        crossorigin="anonymous"
+        type="text/javascript"></script>
+        <script src="login.js?random=<?php echo filemtime('login.js'); ?>"></script>
+    </head>
+    <body style="background-color:#333d3e;">
+        <div id="header" style="color:#ffffff;
+            align-items:center;
+            margin:auto;
+            text-align:center;
+            border-bottom:2px solid;">
+            <div class="space-between" style="justify-content:space-between;display:flex;align-items:center;">
+                <span style="display:flex;align-items:center;">
+                    <img src="images/bank-icon.png" alt="bank-icon" style="width:64px;height:64px;">
+                    <h1 style="padding-top:15px;padding-left:5px;">BankA Signing App</h1>
+                </span>
+            </div>
+        </div>
+        <br>
+        <div id="content" class="content">
+            <div id="div_login" style="justify-content:space-between;
+            margin:auto;
+            text-align:center;">
+                <h1>Login</h1>
+                <br>
+                <div id="message">Login via the Swift Digital ID app.</div>
+                <div id="details"></div>
+                <br>
+                <div>
+                    <input type="text" class="textbox" id="txt_uname" name="txt_uname" placeholder="User ID" />
+                </div>
+                <br>
+                <div>
+                    <input type="button" value="Submit" name="but_submit" id="but_submit" />
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+

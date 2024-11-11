@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Bank App Demo</title>
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="icon" type="image/ico" href="images/favicon.ico">
+</head>
+
+<body onload="setView()" style="background-color:#333d3e;">
+<div id="header" style="color:#ffffff;
+    align-items:center;
+    margin:auto;
+    text-align:center;
+    border-bottom:2px solid;">
+    <div class="space-between" style="justify-content:space-between;display:flex;align-items:center;">
+        <span style="display:flex;align-items:center;">
+            <img src="images/bank-icon.png" alt="bank-icon" style="width:64px;height:64px;">
+            <h1 style="padding-top:15px;padding-left:5px;">BankA Signing App</h1>
+        </span>
+        <button type="button" class="btn btn-default btn-sm" onclick="logout()">
+            <span class="glyphicon glyphicon-log-out"></span> Log out
+        </button>
+    </div>
+</div>
+<br>
+<div id="content" class="content">
+    <div id="formdiv">
+        <h2 style="text-align:center;border-bottom:2px solid;">Start A Transaction</h2>
+        <p style="text-align:center;">Click the button below to start a transaction.</p>
+        <form id="sigForm">
+            <span style="width:120px;display:inline-block;">BIC8:</span>
+            <input type="text" id="bic8" style="width:240px;">
+            <br>
+            <br>
+            <span style="width:120px;display:inline-block;">Message:</span>
+            <input type="text" id="message" style="width:240px;">
+            <br>
+            <br>
+            <span style="width:120px;display:inline-block;">Approver:</span>
+            <input type="text" id="approverSelection" style="width:240px;">
+            <br>
+            <br>
+            <div class="space-between" style="justify-content:space-between;display:flex;align-items:center;">
+                <span style="width:120px;display:inline-block;">Approval Complexity:</span>
+                <select class="form-control" id="flowSelection" style="width:240px;">
+                    <option value="EASY">Easy</option>
+                    <option value="AVERAGE">Average</option>
+                    <option value="COMPLEX">Complex</option>
+                </select>
+            </div>
+            <br>
+            <br>
+            <span style="width:120px;display:inline-block;">Digest:</span>
+            <input type="text" id="digest" style="width:240px;" placeholder="Optional">
+            <br>
+            <br>
+            <div class="space-between" style="justify-content:space-between;display:flex;align-items:center;">
+                <span style="width:120px;display:inline-block;">Digest Algorithm:</span>
+                <select class="form-control" id="alg" style="width:240px;">
+                    <option value="SHA256">SHA256</option>
+                    <option value="SHA512">SHA512</option>
+                </select>
+            </div>
+            <br>
+            <br>
+            <span style="display: flex;justify-content: center;align-items: center;">
+                    <button type="submit" class="button" id="startButton">Submit</button>
+                </span>
+        </form>
+    </div>
+    <div id="txdiv" style="display:none;">
+        <h2 style="text-align:center;border-bottom:2px solid;">Transaction Status</h2>
+        <span style="font-weight:bold;width:150px;display:inline-block;" id="sessionIdLabel">Session ID: </span>
+        <span id="sessionId" ></span>
+        <br>
+        <br>
+        <div id="vcdiv"  style="display:none;">
+            <span style="font-weight:bold;width:150px;display:inline-block;" id="vcLabel">Verification Code: </span>
+            <span id="verificationCode"></span>
+        </div>
+        <br>
+        <br>
+        <div id="pendingdiv" style="display:block">
+            <span style="font-weight:bold;width:150px;display:inline-block;"
+                  id="statusLabel">Transaction Status: </span>
+            <span id="status"></span>
+
+        </div>
+        <div id="successdiv" style="display:none; max-width:1000px; word-wrap:break-word;">
+            <span style="font-weight:bold;width:150px;display:inline-block;">Final Status: </span>
+            <span id="successendresult"></span>
+            <br>
+            <br>
+
+            <span style="font-weight:bold;">Signing Certificate DN: </span>
+            <br>
+            <span id="dn"></span>
+            <br>
+            <br>
+
+            <span style="font-weight:bold;">Certificate: </span>
+            <div id="certdiv" style="display:none;">
+                <br>
+                <span id="cert"></span>
+            </div>
+            <br>
+            <button type="button" class="button" onclick="toggleDiv('certdiv')" id="certbutton">Show Certificate
+            </button>
+            <br>
+            <br>
+
+            <span style="font-weight:bold;">Signature: </span>
+            <div id="sigdiv" style="display:none;">
+                <br>
+                <span id="signature"></span>
+            </div>
+            <br>
+            <button type="button" class="button" onclick="toggleDiv('sigdiv')" id="sigbutton">Show Signature</button>
+            <br>
+            <br>
+            <h2 style="text-align:center;border-bottom:2px solid;"></h2>
+            <div style="margin:auto;text-align:center;">
+                <button type="button" class="button" onclick="reset()">Send Another</button>
+            </div>
+        </div>
+        <div id="errordiv" style="display:none; max-width:1000px; word-wrap:break-word;">
+            <span style="font-weight:bold;width:150px;display:inline-block;">Error Code: </span>
+            <span id="errorendresult"></span>
+            <br>
+            <br>
+            <span style="font-weight:bold;width:150px;display:inline-block;">Error Details: </span>
+            <span id="errordetails"></span>
+            <br>
+            <br>
+            <h2 style="text-align:center;border-bottom:2px solid;"></h2>
+            <div style="margin:auto;text-align:center;">
+                <button type="button" class="button" onclick="reset()">Send Another</button>
+            </div>
+        </div>
+        <br>
+        <br>
+
+    </div>
+</div>
+<script
+        src="https://code.jquery.com/jquery-3.7.1.min.js"
+        crossorigin="anonymous"
+        type="text/javascript"></script>
+<script src="client.js?random=<?php echo filemtime('client.js'); ?>"></script>
+</body>
+</html>
