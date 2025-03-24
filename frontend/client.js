@@ -80,6 +80,16 @@ async function hash(string) {
   return btoa(String.fromCharCode.apply(null, new Uint8Array(hashBuffer)));
 }
 
+function printStringOrArray(value) {
+    if (typeof value === 'string') {
+        return value;
+    } else if (Array.isArray(value) && value.every(item => typeof item === 'string')) {
+        return value.join(', '); // Print array elements separated by commas
+    } else {
+        console.log('The value is not a string or a string array.');
+    }
+}
+
 async function submitForSignature() {
   let corpId = document.forms["sigForm"]["approverSelection"].value;
   let bic = document.forms["sigForm"]["bic8"].value;
@@ -89,6 +99,7 @@ async function submitForSignature() {
   let message = document.forms["sigForm"]["message"].value;
   let digest = document.forms["sigForm"]["digest"].value;
   let alg = document.forms["sigForm"]["alg"].value;
+  let batchSize = document.forms["sigForm"]["batchSize"].value;
 
   let digestAlg;
   if(digest != null && digest != "" && digest != "Optional") {
@@ -97,6 +108,12 @@ async function submitForSignature() {
   } else {
     txDigest = await hash(message);
     digestAlg = "SHA256";
+  }
+
+  let digestList = [txDigest];
+  for (let i = 1; i < batchSize; i++) {
+    // Batch needs unique digests, so compute digests based on i
+    digestList.push(await hash(i));
   }
 
   // const vals = [corpId, bic, service, userPreferredMethod, requiredSecurityLevel, message, txDigest, digestAlg];
@@ -116,7 +133,7 @@ async function submitForSignature() {
     requesterBic: bic,
     requesterService: service,
     userId: corpId,
-    digest: txDigest,
+    digest: digestList,
     digestAlg: digestAlg,
     userPreferredMethod: userPreferredMethod,
     requiredSecurityLevel: requiredSecurityLevel,
@@ -171,7 +188,7 @@ function pollStatus() {
         if (data["result"] === "OK") {
           document.getElementById("status").innerHTML = "COMPLETE";
           document.getElementById("successendresult").innerHTML = "OK";
-          document.getElementById("signature").innerHTML = data["signature"];
+          document.getElementById("signature").innerHTML = printStringOrArray(data['signature']);
           document.getElementById("cert").innerHTML = data["certificate"];
           document.getElementById("dn").innerHTML = data["dn"];
           document.getElementById("errordiv").style.display = "none";
