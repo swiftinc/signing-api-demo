@@ -2,7 +2,9 @@
 **/.DS_Store
 
 # Ignore keys and certificates
-**/*.pem
+**/*.pem*
+**/*.cer*
+**/*.key*
 
 # Ignore env files except the sample
 **/*.env*

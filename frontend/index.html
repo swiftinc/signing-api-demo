@@ -65,6 +65,14 @@
             </div>
             <br>
             <br>
+            <span style="width:120px;display:inline-block;">
+                <label for="points">Batch size:</label>
+                <br>
+                <output id="batchSize">1</output>
+            </span>
+            <input type="range" id="points" name="points" min="1" max="100" value="1" oninput="document.getElementById('batchSize').value = this.value" style="width:240px;">
+            <br>
+            <br>
             <span style="display: flex;justify-content: center;align-items: center;">
                     <button type="submit" class="button" id="startButton">Submit</button>
                 </span>
