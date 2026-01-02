@@ -67,7 +67,7 @@ async function createJWTAssertion() {
   // get the current time to put in the payload
   var currentTime = +new Date();
   var issuedAtTimeSeconds = currentTime / 1000;
-  var expirationTimeSeconds = currentTime / 1000 + 900;
+  var expirationTimeSeconds = currentTime / 1000 + 700;
 
   //create a iss :
   var clientID = username;
@@ -87,6 +87,7 @@ async function createJWTAssertion() {
     algorithm: "RS256",
     header: header,
   });
+  // console.log("Created JWT assertion: " + jwt_token);
   return jwt_token;
 }
 
@@ -107,19 +108,23 @@ export async function getOauthToken() {
     method: "POST",
     followRedirect: true,
   };
-  console.log(options);
+  //console.log(options);
 
   try {
     const data = await got(
       "https://" + swiftApiHost + "/oauth2/v1/token",
       options
     ).json();
-    console.log("Token received: " + data["access_token"]);
+    // console.log("Token received: " + data["access_token"]);
     return data["access_token"];
   } catch (e) {
-    if (e.response && e.response.statusCode >= 400 && e.response.statusCode < 600) {
+    if (
+      e.response &&
+      e.response.statusCode >= 400 &&
+      e.response.statusCode < 600
+    ) {
       // Handle 4XX/5XX error
-      console.error(e.response.statusCode + ' Error:' + e.response.body);
+      console.error(e.response.statusCode + " Error:" + e.response.body);
       return null;
     } else {
       // Handle other errors
@@ -130,7 +135,7 @@ export async function getOauthToken() {
 }
 
 export async function deleteOauthToken(token) {
-  console.log("Called delete-oauth-token for " + token);
+  // console.log("Called delete-oauth-token for " + token);
 
   const options = {
     headers: {
@@ -148,9 +153,13 @@ export async function deleteOauthToken(token) {
     await got("https://" + swiftApiHost + "/oauth2/v1/revoke", options);
     console.log("Token deleted");
   } catch (e) {
-    if (e.response && e.response.statusCode >= 400 && e.response.statusCode < 600) {
+    if (
+      e.response &&
+      e.response.statusCode >= 400 &&
+      e.response.statusCode < 600
+    ) {
       // Handle 4XX/5XX error
-      console.error(e.response.statusCode + ' Error:' + e.response.body);
+      console.error(e.response.statusCode + " Error:" + e.response.body);
       return null;
     } else {
       // Handle other errors
@@ -161,8 +170,9 @@ export async function deleteOauthToken(token) {
 }
 
 function generateRandomString(length) {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = characters.length;
   let counter = 0;
   while (counter < length) {
@@ -176,14 +186,14 @@ export async function generateRandomSHA256Hash() {
   const randomString = generateRandomString(32);
   const hash = await generateHash(randomString);
   console.log("Generated hash: " + hash + ", from data : " + randomString);
-  return { hash: hash, randomString: randomString};
+  return { hash: hash, randomString: randomString };
 }
 
 export async function generateHash(string) {
-  const hash = crypto.createHash('sha256');
-  hash.update(string, 'utf8');
+  const hash = crypto.createHash("sha256");
+  hash.update(string, "utf8");
   const hashBuffer = hash.digest();
-  return hashBuffer.toString('base64');
+  return hashBuffer.toString("base64");
 }
 
 export function checkCertificateExpiration(certificate) {
@@ -216,9 +226,9 @@ export function verifySignature(signature, certificate, data) {
   });
 
   let dataBuffer = Buffer.from(data);
-  const verifier = crypto.createVerify('RSA-SHA256');
+  const verifier = crypto.createVerify("RSA-SHA256");
   verifier.update(dataBuffer);
-  const isValid = verifier.verify(publicKey, signature, 'base64');
+  const isValid = verifier.verify(publicKey, signature, "base64");
 
   if (isValid) {
     console.log("Signature is valid");

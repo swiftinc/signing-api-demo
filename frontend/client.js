@@ -81,13 +81,16 @@ async function hash(string) {
 }
 
 function printStringOrArray(value) {
-    if (typeof value === 'string') {
-        return value;
-    } else if (Array.isArray(value) && value.every(item => typeof item === 'string')) {
-        return value.join(', '); // Print array elements separated by commas
-    } else {
-        console.log('The value is not a string or a string array.');
-    }
+  if (typeof value === "string") {
+    return value;
+  } else if (
+    Array.isArray(value) &&
+    value.every((item) => typeof item === "string")
+  ) {
+    return value.join(", "); // Print array elements separated by commas
+  } else {
+    console.log("The value is not a string or a string array.");
+  }
 }
 
 async function submitForSignature() {
@@ -102,7 +105,7 @@ async function submitForSignature() {
   let batchSize = document.forms["sigForm"]["batchSize"].value;
 
   let digestAlg;
-  if(digest != null && digest != "" && digest != "Optional") {
+  if (digest != null && digest != "" && digest != "Optional") {
     txDigest = digest;
     digestAlg = alg;
   } else {
@@ -153,6 +156,14 @@ async function submitForSignature() {
     traditional: true,
     success: function (data) {
       console.log(data);
+      if (typeof data === "string") {
+        try {
+          data = JSON.parse(data);
+        } catch (e) {
+          console.debug("Data is not a JSON string.");
+        }
+      }
+
       if (data["state"] === "PENDING") {
         sessionId = data["sessionId"];
         verificationCode = data["verificationCode"];
@@ -160,7 +171,14 @@ async function submitForSignature() {
         setView();
       } else {
         document.getElementById("errorendresult").innerHTML = "ERROR";
-        document.getElementById("errordetails").innerHTML = data["result"];
+        if (data["result"] != undefined) {
+          document.getElementById("errordetails").innerHTML = data["result"];
+        } else if (data["text"] != undefined) {
+          document.getElementById("errordetails").innerHTML = data["text"];
+        } else {
+          document.getElementById("errordetails").innerHTML =
+            "See web application logs for details.";
+        }
         document.getElementById("successdiv").style.display = "none";
         document.getElementById("pendingdiv").style.display = "none";
         document.getElementById("errordiv").style.display = "block";
@@ -184,11 +202,21 @@ function pollStatus() {
     traditional: true,
     success: function (data) {
       console.log(data);
+      if (typeof data === "string") {
+        try {
+          data = JSON.parse(data);
+        } catch (e) {
+          console.debug("Data is not a JSON string.");
+        }
+      }
+
       if (data["state"] === "COMPLETE") {
         if (data["result"] === "OK") {
           document.getElementById("status").innerHTML = "COMPLETE";
           document.getElementById("successendresult").innerHTML = "OK";
-          document.getElementById("signature").innerHTML = printStringOrArray(data['signature']);
+          document.getElementById("signature").innerHTML = printStringOrArray(
+            data["signature"]
+          );
           document.getElementById("cert").innerHTML = data["certificate"];
           document.getElementById("dn").innerHTML = data["dn"];
           document.getElementById("errordiv").style.display = "none";
@@ -196,7 +224,14 @@ function pollStatus() {
           document.getElementById("successdiv").style.display = "block";
         } else {
           document.getElementById("errorendresult").innerHTML = "ERROR";
-          document.getElementById("errordetails").innerHTML = data["result"];
+          if (data["result"] != undefined) {
+            document.getElementById("errordetails").innerHTML = data["result"];
+          } else if (data["text"] != undefined) {
+            document.getElementById("errordetails").innerHTML = data["text"];
+          } else {
+            document.getElementById("errordetails").innerHTML =
+              "See web application logs for details.";
+          }
           document.getElementById("successdiv").style.display = "none";
           document.getElementById("pendingdiv").style.display = "none";
           document.getElementById("errordiv").style.display = "block";

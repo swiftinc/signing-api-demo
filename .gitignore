@@ -5,6 +5,7 @@
 **/*.pem*
 **/*.cer*
 **/*.key*
+**/*.p12*
 
 # Ignore env files except the sample
 **/*.env*
